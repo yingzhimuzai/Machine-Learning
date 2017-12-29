@@ -1,0 +1,34 @@
+目标函数:
+
+keras文档:  http://keras.io/objectives/
+
+ 
+
+mean_squared_error / mse  均方误差，常用的目标函数，公式为((y_pred-y_true)**2).mean()
+mean_absolute_error / mae 绝对值均差，公式为(|y_pred-y_true|).mean()
+mean_absolute_percentage_error / mape公式为：(|(y_true - y_pred) / clip((|y_true|),epsilon, infinite)|).mean(axis=-1) * 100，和mae的区别就是，累加的是（预测值与实际值的差）除以（剔除不介于epsilon和infinite之间的实际值)，然后求均值。
+mean_squared_logarithmic_error / msle公式为： (log(clip(y_pred, epsilon, infinite)+1)- log(clip(y_true, epsilon,infinite)+1.))^2.mean(axis=-1)，这个就是加入了log对数，剔除不介于epsilon和infinite之间的预测值与实际值之后，然后取对数，作差，平方，累加求均值。
+squared_hinge 公式为：(max(1-y_true*y_pred,0))^2.mean(axis=-1)，取1减去预测值与实际值乘积的结果与0比相对大的值的平方的累加均值。
+hinge 公式为：(max(1-y_true*y_pred,0)).mean(axis=-1)，取1减去预测值与实际值乘积的结果与0比相对大的值的的累加均值。
+binary_crossentropy: 常说的逻辑回归, 就是常用的交叉熵函数
+categorical_crossentropy: 多分类的逻辑， 交叉熵函数的一种变形吧，没看太明白
+性能评估函数：
+
+binary_accuracy: 对二分类问题,计算在所有预测值上的平均正确率
+categorical_accuracy:对多分类问题,计算再所有预测值上的平均正确率
+sparse_categorical_accuracy:与categorical_accuracy相同,在对稀疏的目标值预测时有用
+top_k_categorical_accracy: 计算top-k正确率,当预测值的前k个值中存在目标类别即认为预测正确
+sparse_top_k_categorical_accuracy：与top_k_categorical_accracy作用相同，但适用于稀疏情况
+
+自定义方法：
+
+(y_true, y_pred) as arguments and return a single tensor value.
+
+import keras.backend as K
+
+def mean_pred(y_true, y_pred):
+    return K.mean(y_pred)
+
+model.compile(optimizer='rmsprop',
+              loss='binary_crossentropy',
+              metrics=['accuracy', mean_pred])
